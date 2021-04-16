@@ -5,13 +5,14 @@ const { useState, useEffect } = require('react');
 
 
 const Gageboo = () => {
-  const [money, setMoney] = useState('20000000');
-  const [spend, setSpend] = useState(0);
+    const [money, setMoney] = useState('20000000');
+    const [money_show, setMoney_show] = useState('20,000,000');
+    const [spend, setSpend] = useState('');
   const [result, setResult] = useState([]);
   const [currentmoney, setCurrentmoney] = useState();
   const [list, setList] = useState();
-  const [time, setTime] = useState("today");
-  const [title, setTitle] = useState('내용');
+  const [time, setTime] = useState('');
+  const [title, setTitle] = useState('');
 
   const inputEl = React.useRef(null);
 
@@ -27,11 +28,12 @@ const Gageboo = () => {
 
   useEffect(() => { // componentDidMount, componentDidUpdate 역할(1대1 대응은 아님)
     const List = [...result];
-    const Story = '날짜 : ' + time + ' 내용 : '+ title+ ' 비용 : '+ spend;
-    if(money!=='20000000')
+    const Story = '날짜 : ' + time + ' 내역 : '+ title+ ' 금액 : '+ spend.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    setMoney_show(money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+    if(money!=='20000000'){
          setResult([...List, Story]);
          setCurrentmoney(Story);
-
+    }
 
     return () => { // componentWillUnmount 역할
         
@@ -44,13 +46,13 @@ const Gageboo = () => {
     return () => { // componentWillUnmount 역할
         
     }
-  }, [currentmoney]);
+  }, [result]);
 
   
   return (
     <>
-      <div>가계부 2000만원 만들기</div>
-      <div>남은 금액 {money}</div>
+      <div>2000만원 청산하기</div>
+      <div>남은 금액 {money_show}원</div>
 
 
       <form onSubmit={onSubmitForm}>
@@ -59,21 +61,26 @@ const Gageboo = () => {
           value={time}
           onChange={(e) => setTime(e.currentTarget.value)}
         />
+        &nbsp;
         <input
          ref={inputEl}
-
+          placeholder='내용'
           value={title}
           onChange={(e) => setTitle(e.currentTarget.value)}
         />
+        &nbsp;
         <input
+          placeholder='금액'
+
           value={spend}
           onChange={(e) => setSpend(e.currentTarget.value)}
         />
+        <div><button>감소</button> </div>
+
         
-        <button>감소</button>
       </form>
       <div>{currentmoney}</div>
-      --
+      <div>[사용내역]</div>
       <div>{list}</div>
     </>
   );
